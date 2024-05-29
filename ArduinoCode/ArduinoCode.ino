@@ -1,10 +1,10 @@
+#include "DHT.h"
 #include "secrets.h"
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "WiFi.h"
  
-#include "DHT.h"
 #define DHTPIN 14     // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT11   // DHT 11
  
