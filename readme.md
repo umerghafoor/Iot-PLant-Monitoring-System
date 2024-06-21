@@ -94,3 +94,15 @@ This application fetches the last 25 and 500 entries from the database and displ
    - Run the script using `python main.py`.
 
 With these steps, your soil moisture monitoring system should be fully functional, allowing you to read, send, store, and visualize soil moisture data.
+
+
+Initial commit: Soil Moisture Monitoring System
+
+- refactor ESP32 code to read soil moisture and send data to the server.
+- refactor PHP script to receive and store soil moisture data in MySQL database.
+- refactor  Python GUI application to fetch and display data with smooth plots.
+- Included setup and usage instructions in README.md.
+
+beta
+
+- Added Code for AWS Connection.
