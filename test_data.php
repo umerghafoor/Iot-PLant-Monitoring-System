@@ -3,7 +3,7 @@
  
 $hostname = "localhost"; 
 $username = "root"; 
-$password = "hafizalihamza9"; 
+$password = "password"; 
 $database = "soilmoisture_db"; 
 
 $conn = mysqli_connect($hostname, $username, $password, $database);

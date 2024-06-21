@@ -4,10 +4,10 @@
 const int soilMoisturePin = 32; // Replace with the actual pin connected to the soil moisture sensor
 
 
-String URL = "http://192.168.10.14/dht11_project/test_data.php";
+String URL = "http://192.168.10.14/dht11_project/test_data.php"; // Replace with the actual URL of the server
 
-const char* ssid = "realme 6i";
-const char* password = "hafizah9";
+const char* ssid = "Redmi 12C"; // Replace with the actual SSID
+const char* password = "password"; // Replace with the actual password
 
 int moisture = 0;
 
@@ -32,7 +32,6 @@ void loop() {
   Serial.print(moisturePercentage);
   Serial.println("%");
 
-  
   if(WiFi.status() != WL_CONNECTED){
     connectWiFi();
     }
@@ -54,11 +53,6 @@ void loop() {
   Serial.println("--------------------------------------------------");
   delay(5000);
 }
-
-
-
-
-
 
 void connectWiFi() {
   WiFi.mode(WIFI_OFF);
