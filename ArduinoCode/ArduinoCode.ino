@@ -1,5 +1,5 @@
-#include <WiFi.h>
 #include <WiFiClientSecure.h>
+#include <WiFiManager.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <time.h>
@@ -24,6 +24,27 @@ DHT dht(DHTPIN, DHTTYPE);
 WiFiClientSecure net;
 PubSubClient client(net);
 
+/**
+ * @brief Connects to Wi-Fi using WiFiManager library.
+ * 
+ */
+void connectWifi()
+{
+  // Connect to Wi-Fi
+  WiFiManager wm;
+  Serial.print("Connecting to Wifi ");
+  if (!wm.autoConnect())
+  {
+    Serial.println("Failed to connect, restarting...");
+    delay(3000);
+    ESP.restart();
+  }
+  Serial.println("Connected.");
+}
+
+/**
+ * @brief Connects to the NTP server and sets the current time.
+ */
 void NTPConnect(void)
 {
   Serial.print("Setting time using SNTP");
@@ -42,21 +63,16 @@ void NTPConnect(void)
   Serial.print(asctime(&timeinfo));
 }
 
+/**
+ * @brief Connects to the AWS IoT Core.
+ */
+/**
+ * Connects to the AWS IoT service using the provided device credentials and MQTT broker endpoint.
+ * Sets up the necessary certificates and private key for secure communication.
+ * Subscribes to the specified topic for receiving messages.
+ */
 void connectAWS()
 {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-  Serial.println("Connecting to Wi-Fi");
-
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("WiFi connected");
-
   // Configure WiFiClientSecure to use the AWS IoT device credentials
   net.setCACert(AWS_CERT_CA);
   net.setCertificate(AWS_CERT_CRT);
@@ -76,7 +92,14 @@ void connectAWS()
     if (client.connect(THINGNAME))
     {
       Serial.println("connected");
-      client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC);
+      if (client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC))
+      {
+        Serial.println("Subscription successful");
+      }
+      else
+      {
+        Serial.println("Subscription failed");
+      }
     }
     else
     {
@@ -107,16 +130,42 @@ void messageHandler(char *topic, byte *payload, unsigned int length)
   Serial.print(topic);
   Serial.print("] ");
 
-  StaticJsonDocument<200> doc;
-  deserializeJson(doc, payload, length);
+  // Print received payload for debugging
+  Serial.write(payload, length);
+  Serial.println();
 
-  const char *message = doc["message"];
-  Serial.println(message);
+  // Parse JSON payload
+  StaticJsonDocument<200> doc;
+  DeserializationError error = deserializeJson(doc, payload, length);
+
+  if (error)
+  {
+    Serial.print("deserializeJson() failed: ");
+    Serial.println(error.c_str());
+    return;
+  }
+
+  // Extract data from JSON document
+  float humidity = doc["humidity"];
+  float temperature = doc["temperature"];
+  const char *timestamp = doc["timestamp"];
+
+  // Use extracted data as needed
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.print(" %\tTemperature: ");
+  Serial.print(temperature);
+  Serial.print("°C\tTimestamp: ");
+  Serial.println(timestamp);
 }
+
+
 
 void setup()
 {
   Serial.begin(115200);
+  // Connect to Wifi using Wifi Manager
+  connectWifi();
   connectAWS();
   dht.begin();
   NTPConnect();
@@ -141,5 +190,5 @@ void loop()
 
   publishMessage();
   client.loop();
-  delay(10000);
+  delay(1000);
 }
