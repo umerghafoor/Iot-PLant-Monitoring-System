@@ -1,95 +1,58 @@
-# IOT Plant Monitoring System
+# IoT Plant Monitoring System
 
-## Introduction
+## Project Overview
 
-The IOT Plant Monitoring System is a project that aims to monitor the health and well-being of plants using Internet of Things (IoT) technology.
+The IoT Plant Monitoring System is a smart system designed to monitor plant health using sensors and send data to the cloud for analysis. It integrates with AWS IoT Core to provide real-time updates on plant conditions, including humidity, temperature, and soil moisture levels.
 
-## components
+## Features
 
-This project consists of three main components:
+- **Real-Time Monitoring**: Tracks plant conditions and provides updates via AWS IoT Core.
+- **Data Publishing**: Sends sensor data to AWS IoT Core for remote monitoring and analysis.
+- **Time Synchronization**: Ensures accurate timestamps using NTP servers.
+- **Wi-Fi Connectivity**: Connects to Wi-Fi using ESP32 and saves Wi-Fi credentials.
 
-1. **ESP32 Code**: Reads soil moisture data and sends it to a server.
-2. **PHP Server Script**: Receives and stores soil moisture data in a MySQL database.
-3. **Python GUI Application**: Fetches and displays the data from the database with smooth plots.
+## Components
 
-## Components and Their Functions
+- **DHT11 Sensor**: Measures ambient humidity and temperature.
+- **Soil Moisture Sensor (Capacitive)**: Measures soil moisture content.
+- **ESP32 Dev Board**: Handles sensor data collection and communication with AWS IoT Core.
+- **AWS IoT Core**: Manages data communication and storage in the cloud.
 
-### 1. ESP32 Code (`main.ino`)
+## Getting Started
 
-This code reads the soil moisture value from a sensor connected to the ESP32 and sends it to a server via an HTTP POST request.
+1. **Hardware Setup**:
+   - Connect the DHT11 sensor and soil moisture sensor to the ESP32 according to the pin configuration specified in `config.h`.
 
-#### Required Libraries
+2. **Software Setup**:
+   - Install the necessary libraries: `WiFiClientSecure`, `PubSubClient`, `ArduinoJson`, and `DHT`. You can also use PlatformIO to manage dependencies.
+   - Update the `secrets.h` file with your AWS IoT credentials (endpoint, thing name, private key, certificate) and Wi-Fi details (SSID, password).
+   - Set the appropriate time zone in `config.h` to ensure accurate timestamps.
+   - Upload the code to your ESP32 board using the Arduino IDE or PlatformIO.
 
-- WiFi.h
-- HTTPClient.h
+## Usage
 
-#### Setup Instructions
+1. **Setup AWS IoT Core**:
+   - Configure your AWS IoT Core settings to create an IoT thing and obtain necessary credentials (endpoint, thing name, private key, certificate).
 
-- Connect the soil moisture sensor to the specified pin (`soilMoisturePin = 32`).
-- Update the WiFi credentials (`ssid` and `password`) and the server URL (`URL`).
-- Upload the code to the ESP32.
+2. **Configure `secrets.h`**:
+   - Enter your AWS IoT credentials and Wi-Fi details in the `secrets.h` file.
 
-#### Key Functions
+3. **Connect to ESP32**:
+   - Ensure that the ESP32 is powered and connected to the same Wi-Fi network specified in `secrets.h`.
 
-- **connectWiFi()**: Connects the ESP32 to the WiFi network.
-- **loop()**: Reads the soil moisture sensor value, calculates the moisture percentage, and sends the data to the server.
+4. **Monitor Data**:
+   - Access the sensor data via AWS IoT Core. You can also integrate with other cloud-based data analysis tools for further insights.
 
-### 2. PHP Server Script (`test_data.php`)
+## License
 
-This script receives the soil moisture data from the ESP32 and stores it in a MySQL database.
-#### Setup Instructions
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-- Ensure you have a MySQL server running.
-- Create a database named `soilmoisture_db` and a table named `dht11` with columns `Moisture`, `DateTime`, and `ID`.
-- Update the database credentials (`hostname`, `username`, `password`, `database`) in the script.
-- Deploy the script on a web server.
+## Acknowledgments
 
-#### Key Functions
+- AWS IoT Core
+- Arduino Community
+- Libraries and Tools used in development
 
-- Connects to the MySQL database.
-- Inserts the received soil moisture data into the `dht11` table.
+## Contact
 
-### 3. Python GUI Application (`main.py`)
-
-This application fetches the last 25 and 500 entries from the database and displays them as smooth plots using Tkinter and Matplotlib.
-
-#### Required Libraries
-
-- mysql.connector
-- tkinter
-- ttk
-- matplotlib
-- scipy
-- numpy
-
-#### Setup Instructions
-
-- Ensure you have Python and the required libraries installed.
-- Update the MySQL database credentials (`db_config`).
-- Run the script to start the GUI.
-
-#### Key Functions
-
-- **fetch_last_entries_and_show_smooth_plots()**: Fetches data from the database and updates the plots.
-- **Tkinter GUI**: Displays the original data and plots in a blue-themed window.
-
----
-
-## Complete Steps to Run the Project
-
-1. **ESP32 Code**:
-   - Connect the soil moisture sensor to the ESP32.
-   - Update WiFi credentials and server URL in the code.
-   - Upload the code to the ESP32.
-
-2. **PHP Server Script**:
-   - Set up a MySQL database and table.
-   - Update the database credentials in the script.
-   - Deploy the script on a web server.
-
-3. **Python GUI Application**:
-   - Install required libraries using `pip install mysql-connector-python tkinter matplotlib scipy numpy`.
-   - Update the MySQL database credentials in the script.
-   - Run the script using `python main.py`.
-
-With these steps, your soil moisture monitoring system should be fully functional, allowing you to read, send, store, and visualize soil moisture data.
+For questions or feedback, please contact Umer Ghafoor at <umerghaforr@gmail.com>.
