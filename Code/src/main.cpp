@@ -121,7 +121,7 @@ void publishMessage()
   soilMoisturePercent = map(sensorValue, 3550, 1200, 0, 100);
 
   // Create and serialize JSON document
-  DynamicJsonDocument doc(200);
+  JsonDocument doc;
   doc["humidity"] = h;
   doc["temperature"] = t;
   doc["soilMoisture"] = sensorValue;
